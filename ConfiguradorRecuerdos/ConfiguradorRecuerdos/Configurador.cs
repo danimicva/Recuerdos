@@ -42,8 +42,7 @@ namespace ConfiguradorRecuerdos
 
         private void cargarDirectorio(string ruta)
         {
-            mBiblioteca = new Biblioteca();
-            mBiblioteca.Archivos.AddRange(Directorio.obtenerTodosArchivos(ruta));
+            mBiblioteca = new Biblioteca(ruta);
 
             listarImagenes();
 
@@ -59,8 +58,8 @@ namespace ConfiguradorRecuerdos
             List<ListViewItem> items = new List<ListViewItem>();
             ImageList imageListSmall = new ImageList();
 
-            for (int i = 0; i < mBiblioteca.Archivos.Count && i < max; i++) {
-                Archivo a = mBiblioteca.Archivos[i];
+            for (int i = 0; i < mBiblioteca.Recuerdos.Count && i < max; i++) {
+                Recuerdo a = mBiblioteca.Recuerdos[i];
                 items.Add(new ListViewItem(a.Ruta, i) {Tag = a});
                 imageListSmall.Images.Add(UtilsImagen.generarImagen(a.Ruta, tamanoImagenes));
             }
@@ -76,6 +75,8 @@ namespace ConfiguradorRecuerdos
 
             //Assign the ImageList objects to the ListView.
             lvFotos.SmallImageList = imageListSmall;
+
+            //lvFotos.Items[0].Selected = true;
         }
 
         private void inputs_KeyPress_Guardar(object sender, KeyPressEventArgs e) {
@@ -91,7 +92,7 @@ namespace ConfiguradorRecuerdos
         private void GuardarCambios() {
 
             foreach (ListViewItem item in mFotosSeleccionadas) {
-                Archivo a = (Archivo) item.Tag;
+                Recuerdo a = (Recuerdo) item.Tag;
                 if (tbNombre.Text != "<varios>")
                     a.Nombre = tbNombre.Text;
                 if (tbDia.Text != "<?>")
@@ -107,6 +108,7 @@ namespace ConfiguradorRecuerdos
             lvFotos.Enabled = true;
             btnDeshacer.Enabled = false;
             btnGuardar.Enabled = false;
+            mBiblioteca.GuardarSql();
         }
 
         private void lvFotos_SelectedIndexChanged(object sender, EventArgs e) {
@@ -122,9 +124,9 @@ namespace ConfiguradorRecuerdos
             if (mFotosSeleccionadas.Count == 0)
                 return;
 
-            List<Archivo> archivos = new List<Archivo>();
+            List<Recuerdo> archivos = new List<Recuerdo>();
             foreach(ListViewItem item in mFotosSeleccionadas)
-                archivos.Add((Archivo) item.Tag);
+                archivos.Add((Recuerdo) item.Tag);
 
 
             tbNombre.Text = archivos.Count == 1 || !archivos.Any(a => a.Nombre != archivos[0].Nombre) ? archivos[0].Nombre : "<varios>";
@@ -152,6 +154,19 @@ namespace ConfiguradorRecuerdos
             lvFotos.Enabled = true;
             btnDeshacer.Enabled = false;
             btnGuardar.Enabled = false;
+        }
+
+        private void Configurador_DragEnter(object sender, DragEventArgs e) {
+            e.Effect = DragDropEffects.Link;
+        }
+
+        private void Configurador_DragDrop(object sender, DragEventArgs e) {
+
+            string[] fileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+            
+            foreach(string s in fileList) {
+                mBiblioteca.AñadirArchivo(s);
+            }
         }
     }
 }

@@ -256,6 +256,7 @@
             // 
             // Configurador
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(584, 621);
@@ -268,6 +269,8 @@
             this.Name = "Configurador";
             this.Text = "Configurador";
             this.Load += new System.EventHandler(this.Configurador_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Configurador_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Configurador_DragEnter);
             this.gbInfo.ResumeLayout(false);
             this.gbInfo.PerformLayout();
             this.gbFiltros.ResumeLayout(false);
