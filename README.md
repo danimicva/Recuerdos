@@ -28,12 +28,14 @@ Recuerdo: Es la clase que representa una foto, vídeo o lo que sea.
  - Ruta: Ruta relativa a la base de datos donde se encuentra la foto.
  - Pendiente de revisión: Siempre se inicializará a true. Así se puede usar para ir marcando las que ya estén completamente revisadas.
  - Histórico de revisiones: Estaría bien guardar los cambios que se hacen y cuando, así se puede saber qué foto lleva más tiempo sin tocarse aunque esté con algunos datos.
+ - Comentarios: 
  - Todos estos atributos tienen que poder guardarse como confirmados o no, para poder indicar cuando algo es intuido o está asegurado.
 
 Evento: Representa un evento en el que hay una o varias fotos
  - Fecha: Igual que en el recuerdo.
  - Personas que asistieron: Las personas que asisten a un evento no tienen por qué ser las mismas que están en las fotos del mismo
  - Lugar: Igual que la foto
+ - Comentarios: 
  - Estos campos también deberán poder guardarse como confirmados o no.
 
 Persona: Para registrar todas las personas que están en las fotos o en un evento
@@ -41,3 +43,5 @@ Persona: Para registrar todas las personas que están en las fotos o en un event
  - Apodo:
  - Fecha de nacimiento?
  - Relaciones con otras personas (hermano de, marido de, padre de, etc.).
+ - Comentarios: 
+ - Estos campos también deberán poder guardarse como confirmados o no.
