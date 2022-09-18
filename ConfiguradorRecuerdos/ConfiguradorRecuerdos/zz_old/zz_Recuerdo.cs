@@ -7,9 +7,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConfiguradorRecuerdos.Nucleo
+namespace Recuerdos.Modelo
 {
-    class Recuerdo
+    class zz_Recuerdo
     {
         private string _Ruta;
         public string Ruta {
@@ -94,9 +94,9 @@ namespace ConfiguradorRecuerdos.Nucleo
 
         protected bool mModificado { get; set; } = false;
 
-        public static Recuerdo cargarArchivo(string ruta)
+        public static zz_Recuerdo cargarArchivo(string ruta)
         {
-            Recuerdo a = new Recuerdo();
+            zz_Recuerdo a = new zz_Recuerdo();
             a.Ruta = ruta;
             a.Nombre = ruta.Substring(ruta.LastIndexOf("\\") + 1);
             using (var md5 = MD5.Create()) {

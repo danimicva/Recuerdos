@@ -1,4 +1,4 @@
-﻿namespace ConfiguradorRecuerdos
+﻿namespace Recuerdos
 {
     partial class Configurador
     {

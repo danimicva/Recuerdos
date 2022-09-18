@@ -14,6 +14,8 @@ Funcionalidades básicas:
  - Revisar recuerdos pendientes.
  - Consultar respecto a la información: Para esto no sé si directamente SQL o consultas prefabricadas para los asistentes y así.
  - Exportación de la selección: Para poder enviar a la gente sus fotos, se tiene que poder exportar de alguna manera una selección de fotos.
+ - Modificar la información sobre los recuerdos
+ - Etiquetar a gente desconocida o pendiente de reconocer
 
 ## Modelo de datos
 
@@ -28,6 +30,7 @@ Recuerdo: Es la clase que representa una foto, vídeo o lo que sea.
  - Ruta: Ruta relativa a la base de datos donde se encuentra la foto.
  - Pendiente de revisión: Siempre se inicializará a true. Así se puede usar para ir marcando las que ya estén completamente revisadas.
  - Histórico de revisiones: Estaría bien guardar los cambios que se hacen y cuando, así se puede saber qué foto lleva más tiempo sin tocarse aunque esté con algunos datos.
+ - Hashtags: Podrá tener varios hastags, como "Para meme", "graciosa", "Foto carnet", etc.
  - Comentarios: 
  - Todos estos atributos tienen que poder guardarse como confirmados o no, para poder indicar cuando algo es intuido o está asegurado.
 
@@ -35,6 +38,7 @@ Evento: Representa un evento en el que hay una o varias fotos
  - Fecha: Igual que en el recuerdo.
  - Personas que asistieron: Las personas que asisten a un evento no tienen por qué ser las mismas que están en las fotos del mismo
  - Lugar: Igual que la foto
+ - Un evento puede pertenecer a otro evento (En un viaje, distintas paradas, por ejemplo)
  - Comentarios: 
  - Estos campos también deberán poder guardarse como confirmados o no.
 

@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConfiguradorRecuerdos.Utils
+namespace Recuerdos.Utils
 {
     class UtilsImagen
     {

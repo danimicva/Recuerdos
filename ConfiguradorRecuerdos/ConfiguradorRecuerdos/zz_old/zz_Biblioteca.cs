@@ -1,4 +1,4 @@
-﻿using ConfiguradorRecuerdos.Sql;
+﻿using Recuerdos.Sql;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -6,19 +6,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConfiguradorRecuerdos.Nucleo
+namespace Recuerdos.Modelo
 {
-    class Biblioteca
+    class zz_Biblioteca
     {
         public string Ruta { get; private set; }
-        public List<Recuerdo> Recuerdos { get; private set; } = new List<Recuerdo>();
+        public List<zz_Recuerdo> Recuerdos { get; private set; } = new List<zz_Recuerdo>();
 
-        private GestorBBDD mGestorBBDD;
+        private zz_GestorBBDD mGestorBBDD;
 
-        public Biblioteca(string ruta) {
+        public zz_Biblioteca(string ruta) {
             Ruta = ruta;
             //Archivos.AddRange(obtenerTodosArchivos(ruta));
-            mGestorBBDD = new GestorBBDD(ruta + "bbdd.sqlite");
+            mGestorBBDD = new zz_GestorBBDD(ruta + "bbdd.sqlite");
         }
 
         public void GuardarSql() {
@@ -35,7 +35,7 @@ namespace ConfiguradorRecuerdos.Nucleo
 
             //Si es un archivo)
             if (File.Exists(ruta)) {
-                Recuerdo a = Recuerdo.cargarArchivo(ruta);
+                zz_Recuerdo a = zz_Recuerdo.cargarArchivo(ruta);
                 return AñadirArchivo(a, out error);
             }else if (Directory.Exists(ruta)) { // Si es un directorio.
                 return AñadirCarpeta(ruta, out error);
@@ -48,11 +48,11 @@ namespace ConfiguradorRecuerdos.Nucleo
 
         private bool AñadirCarpeta(string ruta, out string error) {
 
-            List<Recuerdo> archivos = obtenerTodosArchivos(ruta);
+            List<zz_Recuerdo> archivos = obtenerTodosArchivos(ruta);
 
             error = "";
 
-            foreach(Recuerdo a in archivos) {
+            foreach(zz_Recuerdo a in archivos) {
                 AñadirArchivo(a, out string err);
                 if (!string.IsNullOrEmpty(err))
                     error += err + ", ";
@@ -62,7 +62,7 @@ namespace ConfiguradorRecuerdos.Nucleo
             return string.IsNullOrEmpty(error);
         }
 
-        private bool AñadirArchivo(Recuerdo archivo, out string error) {
+        private bool AñadirArchivo(zz_Recuerdo archivo, out string error) {
 
             if(Recuerdos.Any(a => a.MD5Fichero.Equals(archivo.MD5Fichero))) {
                 error = "El fichero ya está en la biblioteca";
@@ -73,12 +73,12 @@ namespace ConfiguradorRecuerdos.Nucleo
             return true;   
         }
 
-        private List<Recuerdo> obtenerTodosArchivos(string ruta) {
-            List<Recuerdo> ret = new List<Recuerdo>();
+        private List<zz_Recuerdo> obtenerTodosArchivos(string ruta) {
+            List<zz_Recuerdo> ret = new List<zz_Recuerdo>();
 
             foreach (string rutaArchivo in Directory.GetFiles(ruta)) {
                 if(!rutaArchivo.EndsWith("sqlite"))
-                    ret.Add(Recuerdo.cargarArchivo(rutaArchivo));
+                    ret.Add(zz_Recuerdo.cargarArchivo(rutaArchivo));
             }
 
             foreach (string rutaDirectorio in Directory.GetDirectories(ruta)) {

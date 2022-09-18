@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Recuerdos.Vista;
+using System;
 using System.Windows.Forms;
 
-namespace ConfiguradorRecuerdos
+namespace Recuerdos
 {
     static class Program
     {
@@ -16,7 +14,7 @@ namespace ConfiguradorRecuerdos
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Configurador());
+            Application.Run(new Principal());
         }
     }
 }

@@ -1,5 +1,5 @@
-﻿using ConfiguradorRecuerdos.Nucleo;
-using ConfiguradorRecuerdos.Utils;
+﻿using Recuerdos.Modelo;
+using Recuerdos.Utils;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 using static System.Windows.Forms.ListView;
 
-namespace ConfiguradorRecuerdos
+namespace Recuerdos
 {
     public partial class Configurador : Form
     {
@@ -15,7 +15,7 @@ namespace ConfiguradorRecuerdos
         private static  Size tamanoImagenes = new Size(100, 100);
 
         private SelectedListViewItemCollection mFotosSeleccionadas;
-        private Biblioteca mBiblioteca;
+        private zz_Biblioteca mBiblioteca;
 
         public Configurador()
         {
@@ -42,7 +42,7 @@ namespace ConfiguradorRecuerdos
 
         private void cargarDirectorio(string ruta)
         {
-            mBiblioteca = new Biblioteca(ruta);
+            mBiblioteca = new zz_Biblioteca(ruta);
 
             listarImagenes();
 
@@ -59,7 +59,7 @@ namespace ConfiguradorRecuerdos
             ImageList imageListSmall = new ImageList();
 
             for (int i = 0; i < mBiblioteca.Recuerdos.Count && i < max; i++) {
-                Recuerdo a = mBiblioteca.Recuerdos[i];
+                zz_Recuerdo a = mBiblioteca.Recuerdos[i];
                 items.Add(new ListViewItem(a.Ruta, i) {Tag = a});
                 imageListSmall.Images.Add(UtilsImagen.generarImagen(a.Ruta, tamanoImagenes));
             }
@@ -92,7 +92,7 @@ namespace ConfiguradorRecuerdos
         private void GuardarCambios() {
 
             foreach (ListViewItem item in mFotosSeleccionadas) {
-                Recuerdo a = (Recuerdo) item.Tag;
+                zz_Recuerdo a = (zz_Recuerdo) item.Tag;
                 if (tbNombre.Text != "<varios>")
                     a.Nombre = tbNombre.Text;
                 if (tbDia.Text != "<?>")
@@ -124,9 +124,9 @@ namespace ConfiguradorRecuerdos
             if (mFotosSeleccionadas.Count == 0)
                 return;
 
-            List<Recuerdo> archivos = new List<Recuerdo>();
+            List<zz_Recuerdo> archivos = new List<zz_Recuerdo>();
             foreach(ListViewItem item in mFotosSeleccionadas)
-                archivos.Add((Recuerdo) item.Tag);
+                archivos.Add((zz_Recuerdo) item.Tag);
 
 
             tbNombre.Text = archivos.Count == 1 || !archivos.Any(a => a.Nombre != archivos[0].Nombre) ? archivos[0].Nombre : "<varios>";
@@ -165,7 +165,7 @@ namespace ConfiguradorRecuerdos
             string[] fileList = (string[])e.Data.GetData(DataFormats.FileDrop, false);
             
             foreach(string s in fileList) {
-                mBiblioteca.AñadirArchivo(s);
+                //mBiblioteca.AñadirArchivo(s);
             }
         }
     }
