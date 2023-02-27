@@ -136,7 +136,6 @@
             this.lblPersonas.Name = "lblPersonas";
             this.lblPersonas.Size = new System.Drawing.Size(238, 46);
             this.lblPersonas.TabIndex = 1;
-            this.lblPersonas.Text = "Personas...";
             // 
             // btnEditar
             // 
@@ -154,7 +153,7 @@
             // 
             this.selectorFecha1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.selectorFecha1.Fecha = null;
+            this.selectorFecha1.Fechas = null;
             this.selectorFecha1.Location = new System.Drawing.Point(89, 64);
             this.selectorFecha1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.selectorFecha1.MinimumSize = new System.Drawing.Size(310, 62);

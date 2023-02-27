@@ -31,7 +31,7 @@ namespace Recuerdos.Modelo
          */
         public Evento() : this(null, "", DateTime.Now, null, "", "") {
         }
-
+        /*
         public Evento Clonar() {
             Evento ret = new() {
                 IdEvento = IdEvento,
@@ -49,7 +49,7 @@ namespace Recuerdos.Modelo
 
             return ret;
         }
-
+        */
         public List<Persona> GetListaPersonas() {
             List<Persona> ret = new();
 

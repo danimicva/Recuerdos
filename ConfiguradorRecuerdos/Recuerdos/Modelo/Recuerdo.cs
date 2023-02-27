@@ -42,7 +42,7 @@ namespace Recuerdos.Modelo
         public bool Borrado { get; set; }
         public bool Nuevo { get; set; }
 
-        //public List<Etiqueta> Etiquetas { get; private set; }
+        public List<RecuerdoPersona> Personas { get; private set; } = new();
         public MiFecha Fecha { get; set; }
 
         public Recuerdo(int? idElemento, string descripcion, DateTime fechaCreacion, int? idRecuerdo, 
@@ -60,6 +60,7 @@ namespace Recuerdos.Modelo
             Revisado = revisado;
             Borrado = borrado;
             Nuevo = nuevo;
+            Personas = new();
         }
         /**
          * Constructor para los nuevos recuerdos
@@ -73,15 +74,14 @@ namespace Recuerdos.Modelo
          * Para al leerlos de BBDD
          */
         public Recuerdo() : this("") {
-            Borrado = false;
-            Nuevo = false;
+           
         }
 
 
         public string getNombreImagen() {
             return Ruta.Substring(Ruta.LastIndexOf("\\") + 1);
         }
-
+        /*
         public Recuerdo Clonar() {
 
             Recuerdo ret = new() {
@@ -93,16 +93,22 @@ namespace Recuerdos.Modelo
                 Md5 = Md5,
                 Evento = Evento?.Clonar(),
                 IdEvento = IdEvento,
-                //Fecha = fecha;
+                Fecha = Fecha.Clonar(),
                 Revisado = Revisado,
                 Borrado = Borrado,
-                Nuevo = Nuevo
+                Nuevo = Nuevo,
+                Personas = new()
             };
 
             ret.CopiarDeOtroElemento(this);
+
+            Personas.ForEach(ep => {
+                ret.Personas.Add(ep);
+            });
+
             return ret;
         }
-
+        */
         private TipoRecuerdo obtenerTipoRecuerdo(string ruta) {
             foreach (string ex in ExtensionesFotos)
                 if (ruta.ToUpper().EndsWith(ex.ToUpper()))
@@ -113,6 +119,37 @@ namespace Recuerdos.Modelo
                     return TipoRecuerdo.Video;
 
             return TipoRecuerdo.Otro;
+        }
+
+
+        public List<Persona> GetListaPersonas() {
+            List<Persona> ret = new();
+
+            Personas.ForEach(ep => {
+                if (ep.Persona != null)
+                    ret.Add(ep.Persona);
+            });
+
+            return ret;
+        }
+
+        public string GetPersonasString() {
+            string ret = "";
+            Personas.ForEach(p => {
+                if (p.Persona == null)
+                    return;
+                ret += (ret != "" ? ", " : "") + p.Persona.Nombre;
+            });
+            return ret;
+        }
+
+        public void RevisarPersonas(List<Persona> personas) {
+            if (Personas == null)
+                Personas = new();
+            else
+                Personas.Clear();
+
+            personas.ForEach(p => Personas.Add(new(IdRecuerdo, p)));
         }
     }
 }

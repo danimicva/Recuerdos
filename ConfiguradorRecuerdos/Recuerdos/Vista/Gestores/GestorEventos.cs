@@ -5,7 +5,7 @@ namespace Recuerdos.Vista.Gestores
 {
     public partial class GestorEventos : Form
     {
-        private Biblioteca? mBiblioteca;
+        private Biblioteca? _Biblioteca;
 
         private Evento? mEventoActual = null;
 
@@ -14,29 +14,29 @@ namespace Recuerdos.Vista.Gestores
         public GestorEventos(Biblioteca? biblioteca = null) {
             InitializeComponent();
 
-            mBiblioteca = biblioteca;
+            _Biblioteca = biblioteca;
         }
 
         private void GestorEventos_Load(object sender, EventArgs e) {
 
-            if (mBiblioteca == null)
+            if (_Biblioteca == null)
                 return;
 
             iniciarUI();
 
-            if (mBiblioteca.Eventos.Count > 0)
+            if (_Biblioteca.Eventos.Count > 0)
                 lbEventos.SelectedItem = lbEventos.Items[0];
-            evEvento.Biblioteca = mBiblioteca;
+            evEvento.Biblioteca = _Biblioteca;
         }
 
         private void iniciarUI() {
-            if (mBiblioteca == null)
+            if (_Biblioteca == null)
                 return;
 
             evEvento.Evento = null;
             lbEventos.Items.Clear();
 
-            mBiblioteca.Eventos.ForEach(e => {
+            _Biblioteca.Eventos.ForEach(e => {
                 lbEventos.Items.Add(e);
             });
         }
@@ -44,7 +44,7 @@ namespace Recuerdos.Vista.Gestores
 
         private void lbEventos_SelectedIndexChanged(object sender, EventArgs e) {
 
-            if (mBiblioteca == null || mActualizandoUi)
+            if (_Biblioteca == null || mActualizandoUi)
                 return;
 
             Evento? ev = lbEventos.SelectedItem as Evento;
@@ -66,6 +66,8 @@ namespace Recuerdos.Vista.Gestores
                 } else { // Deshacemos
                     if (mEventoActual.IdElemento == null) {
                         lbEventos.Items.Remove(mEventoActual);
+                    } else {
+                        _Biblioteca.RecuperarEvento(mEventoActual);
                     }
                 }
             }
@@ -74,15 +76,15 @@ namespace Recuerdos.Vista.Gestores
         private void elegirEvento(Evento? e) {
             mEventoActual = e;
 
-            evEvento.Evento = e?.Clonar();
+            evEvento.Evento = e;
         }
 
         private void btnBorrar_Click(object sender, EventArgs e) {
 
-            if (mEventoActual == null || mBiblioteca == null)
+            if (mEventoActual == null || _Biblioteca == null)
                 return;
 
-            mBiblioteca.BorrarEvento(mEventoActual);
+            _Biblioteca.BorrarEvento(mEventoActual);
 
             lbEventos.Items.Remove(mEventoActual);
 
@@ -90,47 +92,43 @@ namespace Recuerdos.Vista.Gestores
 
         private void btnGuardar_Click(object sender, EventArgs e) {
 
-            // Recogemos el evento actualizado
-            Evento? aGuardar = evEvento.Evento;
-
-            if (mBiblioteca == null || aGuardar == null || mEventoActual == null)
+            if (_Biblioteca == null || mEventoActual == null)
                 return;
 
-            mBiblioteca.GuardarEvento(aGuardar);
+            _Biblioteca.GuardarEvento(mEventoActual);
             evEvento.Modificado = false;
 
             int indice = lbEventos.Items.IndexOf(mEventoActual);
 
             mActualizandoUi = true;
             lbEventos.Items.RemoveAt(indice);
-            lbEventos.Items.Insert(indice, aGuardar);
-            lbEventos.SelectedItem = aGuardar;
-            elegirEvento(aGuardar);
+            lbEventos.Items.Insert(indice, mEventoActual);
+            lbEventos.SelectedItem = mEventoActual;
             mActualizandoUi = false;
 
         }
 
         private void btnDeshacer_Click(object sender, EventArgs e) {
-            deshacerCambios();
-        }
 
-        private void deshacerCambios() {
-
-            if (mBiblioteca == null || mEventoActual == null)
+            if (_Biblioteca == null || mEventoActual == null)
                 return;
 
             if (mEventoActual.IdEvento == null) {
                 evEvento.Modificado = false;
                 lbEventos.Items.Remove(mEventoActual);
             } else {
-                mBiblioteca.RecuperarEvento(mEventoActual);
+                _Biblioteca.RecuperarEvento(mEventoActual);
                 evEvento.Evento = mEventoActual;
             }
-
         }
 
         private void GestorEventos_FormClosed(object sender, FormClosedEventArgs e) {
-            deshacerCambios();
+
+            if (_Biblioteca == null || mEventoActual == null)
+                return;
+
+            comprobarModificado();
+            
         }
 
         private void btnNuevo_Click(object sender, EventArgs e) {
@@ -152,7 +150,7 @@ namespace Recuerdos.Vista.Gestores
         }
 
         private void btnCerrar_Click(object sender, EventArgs e) {
-            comprobarModificado();
+            
             Close();
         }
     }

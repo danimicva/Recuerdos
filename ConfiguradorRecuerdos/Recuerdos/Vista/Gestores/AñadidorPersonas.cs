@@ -12,16 +12,16 @@ using System.Windows.Forms;
 
 namespace Recuerdos.Vista.Gestores
 {
-    public partial class GestorEventoPersona : Form
+    public partial class AñadidorPersonas : Form
     {
         private readonly List<Persona> mPersonasTotales = new();
         public List<Persona> Elegidas = new();
 
-        public GestorEventoPersona() {
+        public AñadidorPersonas() {
             InitializeComponent();
         }
 
-        public GestorEventoPersona(List<Persona> totales, List<Persona> elegidas) : this() {
+        public AñadidorPersonas(List<Persona> totales, List<Persona> elegidas) : this() {
             mPersonasTotales = totales;
             elegidas.ForEach(e => Elegidas.Add(e));
             DialogResult = DialogResult.Cancel;
@@ -98,6 +98,14 @@ namespace Recuerdos.Vista.Gestores
             lbIncluidos.Items.Add(p);
 
             //cargarPersonas();
+        }
+
+        private void lbTodos_MouseDoubleClick(object sender, MouseEventArgs e) {
+            foreach (Persona p in lbTodos.SelectedItems.OfType<Persona>()) {
+                Elegidas.Add(p);
+            };
+
+            cargarPersonas();
         }
     }
 }

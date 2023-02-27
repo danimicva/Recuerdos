@@ -2,15 +2,15 @@
 using Recuerdos.Modelo.BBDD;
 using System.Data;
 
-namespace Recuerdos.Vista
+namespace Recuerdos.Vista.Gestores
 {
-    public partial class Procesador : Form {
+    public partial class GestorRecuerdos : Form {
         private readonly Biblioteca mBiblioteca;
         
         private TreeNode? mLastSelected = null;
 
 
-        public Procesador(Biblioteca biblioteca) {
+        public GestorRecuerdos(Biblioteca biblioteca) {
             InitializeComponent();
             mBiblioteca = biblioteca;
         }
@@ -142,6 +142,13 @@ namespace Recuerdos.Vista
 
         #endregion
 
+        private void btnCerrar_Click(object sender, EventArgs e) {
 
+            Close();
+        }
+
+        private void GestorRecuerdos_FormClosed(object sender, FormClosedEventArgs e) {
+            this.visorRecuerdo1.liberarVisor();
+        }
     }
 }

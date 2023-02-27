@@ -39,7 +39,7 @@ namespace Recuerdos.Vista.Controles_de_usuario
             if (_Evento == null) {
                 Enabled = false;
                 tbNombre.Text = tbLugar.Text = tbDescripcion.Text = lblPersonas.Text = "";
-                selectorFecha1.Fecha = null;
+                selectorFecha1.Fechas = null;
                 return;
             }
 
@@ -47,7 +47,7 @@ namespace Recuerdos.Vista.Controles_de_usuario
             tbNombre.Text = _Evento.Nombre;
             tbLugar.Text = _Evento.Lugar;
             tbDescripcion.Text = _Evento.Descripcion;
-            selectorFecha1.Fecha = _Evento.Fecha;
+            selectorFecha1.Fechas = new List<MiFecha>() { _Evento.Fecha };
             lblPersonas.Text = _Evento.GetPersonasString();
         }
 
@@ -81,7 +81,7 @@ namespace Recuerdos.Vista.Controles_de_usuario
             if (Biblioteca == null || Evento == null || Evento.Personas == null)
                 return;
 
-            GestorEventoPersona gestor = new GestorEventoPersona(Biblioteca.Personas, 
+            AñadidorPersonas gestor = new (Biblioteca.Personas, 
                 Evento.GetListaPersonas());
 
             if(gestor.ShowDialog() == DialogResult.OK) 

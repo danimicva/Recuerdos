@@ -26,6 +26,9 @@
         /// </summary>
         private void InitializeComponent() {
             this.gbDetalles = new System.Windows.Forms.GroupBox();
+            this.gbPersonas = new System.Windows.Forms.GroupBox();
+            this.lblPersonas = new System.Windows.Forms.Label();
+            this.btnEditarPersonas = new System.Windows.Forms.Button();
             this.selectorFecha = new Recuerdos.Vista.Controles_de_usuario.SelectorFecha();
             this.lblFecha = new System.Windows.Forms.Label();
             this.btnDeshacer = new System.Windows.Forms.Button();
@@ -42,14 +45,22 @@
             this.lblDetallesLugar = new System.Windows.Forms.Label();
             this.lblDetallesRuta = new System.Windows.Forms.Label();
             this.pbFotoElegida = new System.Windows.Forms.PictureBox();
+            this.vlcVideo = new Vlc.DotNet.Forms.VlcControl();
+            this.pnlVideo = new System.Windows.Forms.Panel();
+            this.btnVideoStop = new System.Windows.Forms.Button();
+            this.btnVideoPlayPausa = new System.Windows.Forms.Button();
             this.gbDetalles.SuspendLayout();
+            this.gbPersonas.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbFotoElegida)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.vlcVideo)).BeginInit();
+            this.pnlVideo.SuspendLayout();
             this.SuspendLayout();
             // 
             // gbDetalles
             // 
             this.gbDetalles.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbDetalles.Controls.Add(this.gbPersonas);
             this.gbDetalles.Controls.Add(this.selectorFecha);
             this.gbDetalles.Controls.Add(this.lblFecha);
             this.gbDetalles.Controls.Add(this.btnDeshacer);
@@ -65,6 +76,7 @@
             this.gbDetalles.Controls.Add(this.tbDetallesLugar);
             this.gbDetalles.Controls.Add(this.lblDetallesLugar);
             this.gbDetalles.Controls.Add(this.lblDetallesRuta);
+            this.gbDetalles.Enabled = false;
             this.gbDetalles.Location = new System.Drawing.Point(0, 0);
             this.gbDetalles.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.gbDetalles.Name = "gbDetalles";
@@ -74,22 +86,60 @@
             this.gbDetalles.TabStop = false;
             this.gbDetalles.Text = "Detalles";
             // 
+            // gbPersonas
+            // 
+            this.gbPersonas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbPersonas.Controls.Add(this.lblPersonas);
+            this.gbPersonas.Controls.Add(this.btnEditarPersonas);
+            this.gbPersonas.Location = new System.Drawing.Point(135, 115);
+            this.gbPersonas.Name = "gbPersonas";
+            this.gbPersonas.Size = new System.Drawing.Size(240, 59);
+            this.gbPersonas.TabIndex = 15;
+            this.gbPersonas.TabStop = false;
+            this.gbPersonas.Text = "Personas";
+            // 
+            // lblPersonas
+            // 
+            this.lblPersonas.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblPersonas.Location = new System.Drawing.Point(6, 19);
+            this.lblPersonas.Name = "lblPersonas";
+            this.lblPersonas.Size = new System.Drawing.Size(176, 37);
+            this.lblPersonas.TabIndex = 1;
+            // 
+            // btnEditarPersonas
+            // 
+            this.btnEditarPersonas.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnEditarPersonas.Location = new System.Drawing.Point(188, 14);
+            this.btnEditarPersonas.Name = "btnEditarPersonas";
+            this.btnEditarPersonas.Size = new System.Drawing.Size(46, 39);
+            this.btnEditarPersonas.TabIndex = 0;
+            this.btnEditarPersonas.Text = "Editar";
+            this.btnEditarPersonas.UseVisualStyleBackColor = true;
+            this.btnEditarPersonas.Click += new System.EventHandler(this.btnEditarPersonas_Click);
+            // 
             // selectorFecha
             // 
             this.selectorFecha.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.selectorFecha.Fecha = null;
+            this.selectorFecha.Enabled = false;
+            this.selectorFecha.Fechas = null;
             this.selectorFecha.Location = new System.Drawing.Point(456, 115);
             this.selectorFecha.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.selectorFecha.MinimumSize = new System.Drawing.Size(310, 62);
             this.selectorFecha.Name = "selectorFecha";
             this.selectorFecha.Size = new System.Drawing.Size(310, 62);
             this.selectorFecha.TabIndex = 14;
+            this.selectorFecha.FechaModificada += new System.EventHandler(this.selectorFecha_FechaModificada);
             // 
             // lblFecha
             // 
             this.lblFecha.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblFecha.AutoSize = true;
-            this.lblFecha.Location = new System.Drawing.Point(380, 115);
+            this.lblFecha.Location = new System.Drawing.Point(385, 115);
             this.lblFecha.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblFecha.Name = "lblFecha";
             this.lblFecha.Size = new System.Drawing.Size(41, 15);
@@ -99,7 +149,8 @@
             // btnDeshacer
             // 
             this.btnDeshacer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnDeshacer.Location = new System.Drawing.Point(4, 147);
+            this.btnDeshacer.Enabled = false;
+            this.btnDeshacer.Location = new System.Drawing.Point(4, 115);
             this.btnDeshacer.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnDeshacer.Name = "btnDeshacer";
             this.btnDeshacer.Size = new System.Drawing.Size(124, 27);
@@ -111,6 +162,7 @@
             // tbDetallesDescripcion
             // 
             this.tbDetallesDescripcion.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbDetallesDescripcion.Enabled = false;
             this.tbDetallesDescripcion.Location = new System.Drawing.Point(456, 52);
             this.tbDetallesDescripcion.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tbDetallesDescripcion.Multiline = true;
@@ -133,7 +185,8 @@
             // btnGuardar
             // 
             this.btnGuardar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnGuardar.Location = new System.Drawing.Point(136, 147);
+            this.btnGuardar.Enabled = false;
+            this.btnGuardar.Location = new System.Drawing.Point(4, 148);
             this.btnGuardar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnGuardar.Name = "btnGuardar";
             this.btnGuardar.Size = new System.Drawing.Size(124, 27);
@@ -145,6 +198,7 @@
             // tbDetallesFuente
             // 
             this.tbDetallesFuente.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbDetallesFuente.Enabled = false;
             this.tbDetallesFuente.Location = new System.Drawing.Point(456, 19);
             this.tbDetallesFuente.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tbDetallesFuente.Name = "tbDetallesFuente";
@@ -165,6 +219,7 @@
             // 
             // btnDetallesQuitarEvento
             // 
+            this.btnDetallesQuitarEvento.Enabled = false;
             this.btnDetallesQuitarEvento.Location = new System.Drawing.Point(325, 79);
             this.btnDetallesQuitarEvento.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnDetallesQuitarEvento.Name = "btnDetallesQuitarEvento";
@@ -176,6 +231,7 @@
             // 
             // btnDetallesNuevoEvento
             // 
+            this.btnDetallesNuevoEvento.Enabled = false;
             this.btnDetallesNuevoEvento.Location = new System.Drawing.Point(354, 79);
             this.btnDetallesNuevoEvento.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btnDetallesNuevoEvento.Name = "btnDetallesNuevoEvento";
@@ -187,6 +243,7 @@
             // 
             // cbDetallesEvento
             // 
+            this.cbDetallesEvento.Enabled = false;
             this.cbDetallesEvento.FormattingEnabled = true;
             this.cbDetallesEvento.Location = new System.Drawing.Point(61, 82);
             this.cbDetallesEvento.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
@@ -207,6 +264,7 @@
             // 
             // tbDetallesLugar
             // 
+            this.tbDetallesLugar.Enabled = false;
             this.tbDetallesLugar.Location = new System.Drawing.Point(61, 52);
             this.tbDetallesLugar.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.tbDetallesLugar.Name = "tbDetallesLugar";
@@ -248,10 +306,62 @@
             this.pbFotoElegida.TabIndex = 2;
             this.pbFotoElegida.TabStop = false;
             // 
+            // vlcVideo
+            // 
+            this.vlcVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.vlcVideo.BackColor = System.Drawing.Color.Black;
+            this.vlcVideo.Location = new System.Drawing.Point(0, 0);
+            this.vlcVideo.Name = "vlcVideo";
+            this.vlcVideo.Size = new System.Drawing.Size(778, 433);
+            this.vlcVideo.Spu = -1;
+            this.vlcVideo.TabIndex = 16;
+            this.vlcVideo.Text = "vlcControl1";
+            this.vlcVideo.VlcLibDirectory = null;
+            this.vlcVideo.VlcMediaplayerOptions = null;
+            this.vlcVideo.VlcLibDirectoryNeeded += new System.EventHandler<Vlc.DotNet.Forms.VlcLibDirectoryNeededEventArgs>(this.vlcVideo_VlcLibDirectoryNeeded);
+            // 
+            // pnlVideo
+            // 
+            this.pnlVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pnlVideo.Controls.Add(this.btnVideoStop);
+            this.pnlVideo.Controls.Add(this.btnVideoPlayPausa);
+            this.pnlVideo.Controls.Add(this.vlcVideo);
+            this.pnlVideo.Location = new System.Drawing.Point(0, 199);
+            this.pnlVideo.Name = "pnlVideo";
+            this.pnlVideo.Size = new System.Drawing.Size(777, 465);
+            this.pnlVideo.TabIndex = 17;
+            // 
+            // btnVideoStop
+            // 
+            this.btnVideoStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnVideoStop.Location = new System.Drawing.Point(381, 439);
+            this.btnVideoStop.Name = "btnVideoStop";
+            this.btnVideoStop.Size = new System.Drawing.Size(75, 23);
+            this.btnVideoStop.TabIndex = 18;
+            this.btnVideoStop.Text = "Stop";
+            this.btnVideoStop.UseVisualStyleBackColor = true;
+            this.btnVideoStop.Click += new System.EventHandler(this.btnVideoStop_Click);
+            // 
+            // btnVideoPlayPausa
+            // 
+            this.btnVideoPlayPausa.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnVideoPlayPausa.Location = new System.Drawing.Point(300, 439);
+            this.btnVideoPlayPausa.Name = "btnVideoPlayPausa";
+            this.btnVideoPlayPausa.Size = new System.Drawing.Size(75, 23);
+            this.btnVideoPlayPausa.TabIndex = 17;
+            this.btnVideoPlayPausa.Text = "Play";
+            this.btnVideoPlayPausa.UseVisualStyleBackColor = true;
+            this.btnVideoPlayPausa.Click += new System.EventHandler(this.btnVideoPlayPausa_Click);
+            // 
             // VisorRecuerdo
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.pnlVideo);
             this.Controls.Add(this.gbDetalles);
             this.Controls.Add(this.pbFotoElegida);
             this.MinimumSize = new System.Drawing.Size(778, 664);
@@ -259,7 +369,10 @@
             this.Size = new System.Drawing.Size(778, 664);
             this.gbDetalles.ResumeLayout(false);
             this.gbDetalles.PerformLayout();
+            this.gbPersonas.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbFotoElegida)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.vlcVideo)).EndInit();
+            this.pnlVideo.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -283,5 +396,12 @@
         private Label lblFecha;
         private Label lblDescripcion;
         private SelectorFecha selectorFecha;
+        private GroupBox gbPersonas;
+        private Label lblPersonas;
+        private Button btnEditarPersonas;
+        private Vlc.DotNet.Forms.VlcControl vlcVideo;
+        private Panel pnlVideo;
+        private Button btnVideoStop;
+        private Button btnVideoPlayPausa;
     }
 }

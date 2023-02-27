@@ -16,132 +16,6 @@ namespace Recuerdos.Modelo.BBDD
             Conexion = null;
         }
 
-        #region Recuerdos
-
-        public List<Recuerdo> LeerTodosLosRecuerdos() {
-
-            if (Conexion == null)
-                throw new SqlException("Conexión es null");
-
-            List<Recuerdo> ret = new();
-
-            string sql = ConsultasBBDD.SelectRecuerdos();
-
-            SQLiteCommand command = new(sql, Conexion);
-
-            SQLiteDataReader reader = command.ExecuteReader();
-
-            while (reader.Read()) {
-
-                Recuerdo r = new();
-
-                ConsultasBBDD.LeerRecuerdoDeReader(reader, r);
-
-                if (r.IdEvento != null) {
-                    Evento? e = mBiblioteca.Eventos.FirstOrDefault(ee => ee.IdEvento == r.IdEvento);
-                    if(e != null)
-                        r.Evento = e;
-                }
-
-                ret.Add(r);
-            }
-
-            reader.Close();
-            
-            return ret;
-        }
-
-        public void RecuperarRecuerdo(Recuerdo recuerdo) {
-
-            if (Conexion == null)
-                throw new SqlException("Conexión es null");
-
-            if (recuerdo.IdElemento == null)
-                return;
-
-            string sql = ConsultasBBDD.SelectRecuerdos(recuerdo.IdElemento);
-
-            SQLiteCommand command = new(sql, Conexion);
-
-            SQLiteDataReader reader = command.ExecuteReader();
-
-            if (!reader.Read()) {
-                reader.Close();
-                throw new Exception("El recuerdo a recuperar (id_elemento = " + recuerdo.IdElemento + ") no existe en la BBDD");
-            }
-            ConsultasBBDD.LeerRecuerdoDeReader(reader, recuerdo);
-
-            if (recuerdo.IdEvento != null) {
-                Evento? e = mBiblioteca.Eventos.FirstOrDefault(ee => ee.IdEvento == recuerdo.IdEvento);
-                if (e != null)
-                    recuerdo.Evento = e;
-            }
-
-            reader.Close();
-            
-        }
-
-        public void InsertarRecuerdo(Recuerdo rec) {
-
-            if (Conexion == null)
-                throw new SqlException("Conexión es null");
-
-            string sql = ConsultasBBDD.InsertElemento(rec);
-
-            SQLiteCommand command = new(sql, Conexion);
-
-            command.ExecuteNonQuery();
-            rec.IdElemento = (int)Conexion.LastInsertRowId;
-
-            sql = ConsultasBBDD.InsertRecuerdo(rec);
-
-            command = new(sql, Conexion);
-
-            command.ExecuteNonQuery();
-            rec.IdRecuerdo = (int)Conexion.LastInsertRowId;
-
-        }
-
-        public void ActualizarRecuerdo(Recuerdo rec) {
-
-            if (Conexion == null)
-                throw new SqlException("Conexión es null");
-
-            string sql = ConsultasBBDD.UpdateElemento(rec);
-
-            SQLiteCommand command = new(sql, Conexion);
-
-            command.ExecuteNonQuery();
-
-            sql = ConsultasBBDD.UpdateRecuerdo(rec);
-
-            command = new(sql, Conexion);
-
-            command.ExecuteNonQuery();
-
-        }
-
-        public void BorrarRecuerdo(Recuerdo r) {
-
-            if (Conexion == null)
-                throw new SqlException("Conexión es null");
-
-            string sql = ConsultasBBDD.DeleteElemento(r);
-
-            SQLiteCommand command = new(sql, Conexion);
-
-            command.ExecuteNonQuery();
-
-            sql = ConsultasBBDD.DeleteRecuerdo(r);
-
-            command = new(sql, Conexion);
-
-            command.ExecuteNonQuery();
-
-        }
-
-        #endregion
-
         #region Personas
 
         public int ObtenerUsosPersona(int idPersona) {
@@ -269,11 +143,245 @@ namespace Recuerdos.Modelo.BBDD
                 return;
 
             BorrarEventoPersona(persona);
+            BorrarRecuerdoPersona(persona);
 
             string sql = ConsultasBBDD.DeletePersona(persona.IdPersona.Value);
 
             SQLiteCommand command = new(sql, Conexion);
 
+            command.ExecuteNonQuery();
+
+        }
+
+        #endregion
+
+        #region Recuerdos
+
+        public List<Recuerdo> LeerTodosLosRecuerdos() {
+
+            if (Conexion == null)
+                throw new SqlException("Conexión es null");
+
+            List<Recuerdo> ret = new();
+
+            string sql = ConsultasBBDD.SelectRecuerdos();
+
+            SQLiteCommand command = new(sql, Conexion);
+
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            while (reader.Read()) {
+
+                Recuerdo r = new();
+
+                ConsultasBBDD.LeerRecuerdoDeReader(reader, r);
+
+                if (r.IdEvento != null) {
+                    Evento? e = mBiblioteca.Eventos.FirstOrDefault(ee => ee.IdEvento == r.IdEvento);
+                    if(e != null)
+                        r.Evento = e;
+                }
+
+                ret.Add(r);
+                leerRecuerdoPersona(r);
+            }
+
+            reader.Close();
+            
+            return ret;
+        }
+
+        public void RecuperarRecuerdo(Recuerdo recuerdo) {
+
+            if (Conexion == null)
+                throw new SqlException("Conexión es null");
+
+            if (recuerdo.IdElemento == null)
+                return;
+
+            string sql = ConsultasBBDD.SelectRecuerdos(recuerdo.IdElemento);
+
+            SQLiteCommand command = new(sql, Conexion);
+
+            SQLiteDataReader reader = command.ExecuteReader();
+
+            if (!reader.Read()) {
+                reader.Close();
+                throw new Exception("El recuerdo a recuperar (id_elemento = " + recuerdo.IdElemento + ") no existe en la BBDD");
+            }
+            ConsultasBBDD.LeerRecuerdoDeReader(reader, recuerdo);
+
+            if (recuerdo.IdEvento != null) {
+                Evento? e = mBiblioteca.Eventos.FirstOrDefault(ee => ee.IdEvento == recuerdo.IdEvento);
+                if (e != null)
+                    recuerdo.Evento = e;
+            }
+
+            reader.Close();
+
+            leerRecuerdoPersona(recuerdo);
+
+        }
+
+        private void leerRecuerdoPersona(Recuerdo recuerdo) {
+
+            if (Conexion == null)
+                throw new SqlException("Conexión es null");
+
+            SQLiteCommand command;
+            SQLiteDataReader reader;
+
+            if (recuerdo.IdRecuerdo == null)
+                return;
+
+
+            string sql = ConsultasBBDD.SelectRecuerdoPersonas(recuerdo.IdRecuerdo.Value);
+            command = new(sql, Conexion);
+            reader = command.ExecuteReader();
+
+            recuerdo.Personas.Clear();
+
+            while (reader.Read()) {
+                int idPersona = reader.GetInt32(0);
+
+                Persona? p = mBiblioteca.Personas.FirstOrDefault(p => p.IdPersona == idPersona);
+
+                if (p == null) {
+                    continue;
+                }
+
+                recuerdo.Personas.Add(new(recuerdo.IdRecuerdo, p));
+            }
+
+            reader.Close();
+            command.Dispose();
+
+        }
+
+        public void InsertarRecuerdo(Recuerdo recuerdo) {
+
+            if (Conexion == null)
+                throw new SqlException("Conexión es null");
+
+            string sql = ConsultasBBDD.InsertElemento(recuerdo);
+
+            SQLiteCommand command = new(sql, Conexion);
+
+            command.ExecuteNonQuery();
+            recuerdo.IdElemento = (int)Conexion.LastInsertRowId;
+
+            sql = ConsultasBBDD.InsertRecuerdo(recuerdo);
+
+            command = new(sql, Conexion);
+
+            command.ExecuteNonQuery();
+            recuerdo.IdRecuerdo = (int)Conexion.LastInsertRowId;
+
+        }
+
+        public void InsertarRecuerdoPersona(Recuerdo recuerdo) {
+
+            if (Conexion == null)
+                throw new SqlException("Conexión es null");
+
+            recuerdo.Personas.Where(rp => rp.Persona != null).ToList().ForEach(rp => {
+
+                if (rp.IdRecuerdo == null || rp.Persona == null || rp.Persona.IdPersona == null)
+                    throw new Exception("Se intenta guardar un RecuerdoPersona sin idRecuerdo o sin persona o sin persona registrada");
+
+                rp.IdPersona = rp.Persona.IdPersona;
+
+                /*
+                if (rp.Persona.IdPersona == null) {
+                    InsertarPersona(rp.Persona);
+                    mBiblioteca.Personas.Add(rp.Persona);
+                    rp.IdPersona = rp.Persona.IdPersona;
+                }
+                */
+
+#pragma warning disable CS8629 // Un tipo que acepta valores NULL puede ser nulo.
+                string sql = ConsultasBBDD.InsertRecuerdoPersona(rp.IdRecuerdo.Value, rp.Persona.IdPersona.Value);
+#pragma warning restore CS8629 // Un tipo que acepta valores NULL puede ser nulo.
+                SQLiteCommand command = new(sql, Conexion);
+                command.ExecuteNonQuery();
+
+            });
+        }
+
+        public void ActualizarRecuerdo(Recuerdo recuerdo) {
+
+            if (Conexion == null)
+                throw new SqlException("Conexión es null");
+
+            string sql = ConsultasBBDD.UpdateElemento(recuerdo);
+
+            SQLiteCommand command = new(sql, Conexion);
+
+            command.ExecuteNonQuery();
+
+            sql = ConsultasBBDD.UpdateRecuerdo(recuerdo);
+
+            command = new(sql, Conexion);
+
+            command.ExecuteNonQuery();
+
+
+        }
+
+        public void BorrarRecuerdo(Recuerdo recuerdo) {
+
+            if (Conexion == null)
+                throw new SqlException("Conexión es null");
+
+
+            BorrarRecuerdoPersona(recuerdo);
+
+            string sql = ConsultasBBDD.DeleteElemento(recuerdo);
+
+            SQLiteCommand command = new(sql, Conexion);
+
+            command.ExecuteNonQuery();
+
+            sql = ConsultasBBDD.DeleteRecuerdo(recuerdo);
+
+            command = new(sql, Conexion);
+
+            command.ExecuteNonQuery();
+
+        }
+
+        public void BorrarRecuerdoPersona(Recuerdo recuerdo) {
+
+            if (Conexion == null)
+                throw new SqlException("Conexión es null");
+
+            string sql;
+            SQLiteCommand command;
+
+            if (recuerdo.IdRecuerdo == null)
+                return;
+
+
+            sql = ConsultasBBDD.DeleteRecuerdoPersonaPorRecuerdo(recuerdo.IdRecuerdo.Value);
+            command = new(sql, Conexion);
+            command.ExecuteNonQuery();
+
+        }
+
+        private void BorrarRecuerdoPersona(Persona persona) {
+
+            if (Conexion == null)
+                throw new SqlException("Conexión es null");
+
+            string sql;
+            SQLiteCommand command;
+
+            if (persona.IdPersona == null)
+                return;
+
+
+            sql = ConsultasBBDD.DeleteRecuerdoPersonaPorPersona(persona.IdPersona.Value);
+            command = new(sql, Conexion);
             command.ExecuteNonQuery();
 
         }
@@ -391,25 +499,26 @@ namespace Recuerdos.Modelo.BBDD
 
             evento.Personas.ForEach(p => p.IdEvento = evento.IdEvento);
 
-            InsertarEventoPersona(evento);
-
         }
 
-        private void InsertarEventoPersona(Evento evento) {
+        public void InsertarEventoPersona(Evento evento) {
 
             if (Conexion == null)
                 throw new SqlException("Conexión es null");
 
             evento.Personas.Where(ep=> ep.Persona != null).ToList().ForEach(ep => {
 
-                if (ep.IdEvento == null || ep.Persona == null)
-                    return;
+                if (ep.IdEvento == null || ep.Persona == null || ep.Persona.IdPersona == null)
+                    throw new Exception("Se intenta guardar un EventoPersona sin idEvento o sin persona o sin persona registrada");
 
+                ep.IdPersona = ep.Persona.IdPersona;
+                /*
                 if(ep.Persona.IdPersona == null) {
                     InsertarPersona(ep.Persona);
                     mBiblioteca.Personas.Add(ep.Persona);
                     ep.IdPersona = ep.Persona.IdPersona;
                 }
+                */
 
 #pragma warning disable CS8629 // Un tipo que acepta valores NULL puede ser nulo.
                 string sql = ConsultasBBDD.InsertEventoPersona(ep.IdEvento.Value, ep.IdPersona.Value);
@@ -437,12 +546,7 @@ namespace Recuerdos.Modelo.BBDD
 
             command.ExecuteNonQuery();
 
-            BorrarEventoPersona(evento);
 
-            InsertarEventoPersona(evento);
-
-            if (Conexion == null)
-                throw new SqlException("Conexión es null");
         }
 
         public void BorrarEvento(Evento evento) {
@@ -469,7 +573,7 @@ namespace Recuerdos.Modelo.BBDD
 
         }
 
-        private void BorrarEventoPersona(Evento evento) {
+        public void BorrarEventoPersona(Evento evento) {
 
             if (Conexion == null)
                 throw new SqlException("Conexión es null");

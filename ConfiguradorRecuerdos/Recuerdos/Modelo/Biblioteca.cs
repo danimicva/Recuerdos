@@ -104,9 +104,20 @@ namespace Recuerdos.Modelo
 
             if (recuerdo.IdElemento == null) {
                 mGestorBBDD.InsertarRecuerdo(recuerdo);
+                recuerdo.Personas.Where(p => p.Persona != null && p.Persona.IdPersona == null).ToList().ForEach(rp => {
+                    GuardarPersona(rp.Persona, false);
+                });
+                mGestorBBDD.InsertarRecuerdoPersona(recuerdo);
                 Recuerdos.Add(recuerdo);
             } else {
                 mGestorBBDD.ActualizarRecuerdo(recuerdo);
+                recuerdo.Personas.Where(p => p.Persona != null && p.Persona.IdPersona == null).ToList().ForEach(rp => {
+                    GuardarPersona(rp.Persona, false);
+                });
+
+                mGestorBBDD.BorrarRecuerdoPersona(recuerdo);
+                mGestorBBDD.InsertarRecuerdoPersona(recuerdo);
+
                 Recuerdos.RemoveAll(r => r.IdElemento == recuerdo.IdElemento);
                 Recuerdos.Add(recuerdo);
             }
@@ -175,9 +186,19 @@ namespace Recuerdos.Modelo
 
             if (evento.IdElemento == null) {
                 mGestorBBDD.InsertarEvento(evento);
+                evento.Personas.Where(p => p.Persona != null && p.Persona.IdPersona == null).ToList().ForEach(ep => {
+                    GuardarPersona(ep.Persona, false);
+                });
+                mGestorBBDD.InsertarEventoPersona(evento);
                 Eventos.Add(evento);
             } else {
                 mGestorBBDD.ActualizarEvento(evento);
+                evento.Personas.Where(p => p.Persona != null && p.Persona.IdPersona == null).ToList().ForEach(ep => {
+                    GuardarPersona(ep.Persona, false);
+                });
+
+                mGestorBBDD.BorrarEventoPersona(evento);
+                mGestorBBDD.InsertarEventoPersona(evento);
 
                 int indice = Eventos.FindIndex(e => e.IdEvento == evento.IdEvento);
                 Eventos.RemoveAt(indice);
@@ -241,13 +262,22 @@ namespace Recuerdos.Modelo
             return usos;
         }
 
-        public void GuardarPersona(Persona persona) {
+        public void GuardarPersona(Persona persona, bool abrirConexion = true) {
 
-            mGestorBBDD.AbrirConexion();
+            if(abrirConexion)
+                mGestorBBDD.AbrirConexion();
 
             if (persona.IdElemento == null) {
                 mGestorBBDD.InsertarPersona(persona);
                 Personas.Add(persona);
+                Eventos.ForEach(e => e.Personas.ForEach(ep => {
+                    if (ep.Persona != null && ep.Persona.IdPersona == persona.IdPersona)
+                        ep.IdPersona = ep.Persona.IdPersona;
+                }));
+                Recuerdos.ForEach(r => r.Personas.ForEach(rp => {
+                    if (rp.Persona != null && rp.Persona.IdPersona == persona.IdPersona)
+                        rp.IdPersona = rp.Persona.IdPersona;
+                }));
             } else {
                 mGestorBBDD.ActualizarPersona(persona);
                 
@@ -264,7 +294,8 @@ namespace Recuerdos.Modelo
                 
             }
 
-            mGestorBBDD.CerrarConexion();
+            if(abrirConexion)
+                mGestorBBDD.CerrarConexion();
 
         }
 
@@ -308,7 +339,6 @@ namespace Recuerdos.Modelo
                 mGestorBBDD.CerrarConexion(mGestorBBDD.Transaccion);
         }
 
-
         public void IncorporarFicherosNuevos(Func<int, string, bool>? onUpdate = null, Func<int, bool>? onEnd = null) {
 
             int nuevosFicheros = 0;
@@ -325,7 +355,6 @@ namespace Recuerdos.Modelo
             if (onEnd != null)
                 onEnd.Invoke(nuevosFicheros);
         }
-
 
         private void leerFicheros(string ruta, ref int nuevosFicheros, Func<int, string, bool>? onUpdate = null) {
 

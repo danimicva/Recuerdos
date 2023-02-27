@@ -1,8 +1,10 @@
 Funcionando:
  - Desde el procesador crear eventos con personas
  - Igual desde sus gestores
+ - Visor de videos
 
 TODO:
- - Visor de videos
+
  - Añadir personas a fotos
  - Buscador?
+ - Visores?

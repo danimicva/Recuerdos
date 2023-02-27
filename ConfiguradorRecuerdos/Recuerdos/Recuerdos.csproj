@@ -11,6 +11,10 @@
   <ItemGroup>
     <PackageReference Include="NuGet.Configuration" Version="6.2.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.115.5" />
+    <PackageReference Include="VideoLAN.LibVLC.Windows" Version="3.0.18" />
+    <PackageReference Include="Vlc.DotNet.Core" Version="3.1.0" />
+    <PackageReference Include="Vlc.DotNet.Core.Interops" Version="3.1.0" />
+    <PackageReference Include="Vlc.DotNet.Forms" Version="3.1.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -34,7 +38,7 @@
     <Compile Update="Vista\Principal.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="Vista\Procesador.cs">
+    <Compile Update="Vista\Gestores\GestorRecuerdos.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="Vista\ResolvedorDuplicados.cs">

@@ -29,6 +29,7 @@ namespace Recuerdos.Modelo
         public Persona() : base() {
         }
 
+
         public override string? ToString() => Nombre;
     }
 }

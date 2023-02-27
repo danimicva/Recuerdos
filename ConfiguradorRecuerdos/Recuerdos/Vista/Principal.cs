@@ -47,6 +47,8 @@ namespace Recuerdos.Vista
                 mBiblioteca = null;
             }
 
+            this.Text = "Biblioteca: " + ruta;
+
             actualizarUI();
         }
 
@@ -220,7 +222,7 @@ namespace Recuerdos.Vista
             if (mBiblioteca == null)
                 return;
 
-            Procesador p = new Procesador(mBiblioteca);
+            GestorRecuerdos p = new GestorRecuerdos(mBiblioteca);
             p.ShowDialog();
             actualizarUI();
         }

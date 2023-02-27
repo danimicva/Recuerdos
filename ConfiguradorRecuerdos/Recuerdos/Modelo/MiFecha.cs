@@ -59,8 +59,10 @@ namespace Recuerdos.Modelo
 
         public static bool FechasIguales(IEnumerable<MiFecha> fechas) {
             
+            if(fechas == null)
+                return false;
 
-            if (!fechas.Any())
+            if (fechas.Count() < 2)
                 return true;
 
 

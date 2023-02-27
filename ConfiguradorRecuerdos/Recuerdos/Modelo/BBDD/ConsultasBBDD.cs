@@ -38,6 +38,58 @@ namespace Recuerdos.Modelo.BBDD
 
         #endregion
 
+
+        #region Personas
+
+        public static string SelectUsosPersona(int idPersona) =>
+@"SELECT COUNT(*) FROM EVENTO_PERSONA WHERE ID_PERSONA = " + idPersona;
+
+        public static string SelectPersonas(int? idElemento = null) =>
+@"SELECT 
+    E.ID_ELEMENTO, 
+    E.DESCRIPCION, 
+    E.FECHA_CREACION, 
+    P.ID_PERSONA, 
+    P.NOMBRE 
+FROM ELEMENTOS E 
+    INNER JOIN PERSONAS P ON P.ID_ELEMENTO = E.ID_ELEMENTO 
+" + (idElemento != null ? "WHERE e.ID_ELEMENTO = " + idElemento : "");
+        
+        public static string InsertPersona(Persona persona) =>
+@"INSERT INTO PERSONAS(
+    ID_ELEMENTO, 
+    NOMBRE 
+) VALUES (
+    " + persona.IdElemento + @", 
+    '" + persona.Nombre + @"'
+);";
+        
+        public static string UpdatePersona(Persona persona) =>
+@"UPDATE PERSONAS SET 
+    NOMBRE= '" + persona.Nombre + @"'
+WHERE ID_PERSONA = " + persona.IdPersona+ ";";
+        
+        public static void RecuperarPersona(SQLiteDataReader reader, Persona persona) {
+
+            int idElemento = reader.GetInt32(0);
+            string descripcion = reader.GetString(1);
+
+            string fechaCreacionString = reader.GetString(2);
+            DateTime fechaCreacion = DateTime.Parse(fechaCreacionString);
+
+            persona.IdElemento = idElemento;
+            persona.Descripcion = descripcion;
+            persona.FechaCreacion = fechaCreacion;
+            persona.IdPersona= reader.GetInt32(3);
+            persona.Nombre = reader.GetString(4);
+        }
+
+        public static string DeletePersona(int idPersona) =>
+            @"DELETE FROM PERSONAS WHERE ID_PERSONA = " + idPersona + ";";
+
+        #endregion
+
+
         #region Recuerdos
 
         public static string SelectRecuerdos(int? idElemento = null) =>
@@ -63,7 +115,10 @@ namespace Recuerdos.Modelo.BBDD
 FROM ELEMENTOS E 
     INNER JOIN RECUERDOS R ON R.ID_ELEMENTO = E.ID_ELEMENTO 
 " + (idElemento != null ? "WHERE e.ID_ELEMENTO = " + idElemento : "");
-        
+
+        public static string SelectRecuerdoPersonas(int idRecuerdo) =>
+@"SELECT ID_PERSONA FROM RECUERDO_PERSONA WHERE ID_RECUERDO = " + idRecuerdo;
+
         public static string InsertRecuerdo(Recuerdo recuerdo) {
 
             string rutaConComillasEscapadas = recuerdo.Ruta.Replace("\'", "\'\'");
@@ -105,6 +160,9 @@ FROM ELEMENTOS E
 );";
         }
 
+        public static string InsertRecuerdoPersona(int idRecuerdo, int idPersona) =>
+@"INSERT INTO RECUERDO_PERSONA(ID_RECUERDO, ID_PERSONA) VALUES (" + idRecuerdo + ", " + idPersona + ");";
+
         public static string UpdateRecuerdo(Recuerdo recuerdo) {
 
             string rutaConComillasEscapadas = recuerdo.Ruta.Replace("\'", "\'\'");
@@ -128,6 +186,16 @@ FROM ELEMENTOS E
     ANO2 = " + (recuerdo.Fecha.Año2 == null ? "NULL" : recuerdo.Fecha.Año2) + @"
 WHERE ID_RECUERDO = " + recuerdo.IdRecuerdo + ";";
         }
+
+        public static string DeleteRecuerdo(Recuerdo recuerdo) {
+            return @"DELETE FROM RECUERDOS WHERE ID_RECUERDO = " + recuerdo.IdRecuerdo + ";";
+        }
+
+        public static string DeleteRecuerdoPersonaPorRecuerdo(int idRecuerdo) =>
+@"DELETE FROM RECUERDO_PERSONA WHERE ID_RECUERDO = " + idRecuerdo + ";";
+
+        public static string DeleteRecuerdoPersonaPorPersona(int idPersona) =>
+@"DELETE FROM RECUERDO_PERSONA WHERE ID_PERSONA = " + idPersona + ";";
 
         public static void LeerRecuerdoDeReader(SQLiteDataReader reader, Recuerdo recuerdo) {
 
@@ -167,66 +235,8 @@ WHERE ID_RECUERDO = " + recuerdo.IdRecuerdo + ";";
 
             recuerdo.Fecha = fecha;
         }
-
-        public static string DeleteRecuerdo(Recuerdo recuerdo) {
-            return @"DELETE FROM RECUERDOS WHERE ID_RECUERDO = " + recuerdo.IdRecuerdo + ";";
-        }
-
-
         #endregion
 
-        #region Personas
-
-        public static string SelectUsosPersona(int idPersona) =>
-@"SELECT COUNT(*) FROM EVENTO_PERSONA WHERE ID_PERSONA = " + idPersona;
-
-        public static string SelectPersonas(int? idElemento = null) =>
-@"SELECT 
-    E.ID_ELEMENTO, 
-    E.DESCRIPCION, 
-    E.FECHA_CREACION, 
-    P.ID_PERSONA, 
-    P.NOMBRE 
-FROM ELEMENTOS E 
-    INNER JOIN PERSONAS P ON P.ID_ELEMENTO = E.ID_ELEMENTO 
-" + (idElemento != null ? "WHERE e.ID_ELEMENTO = " + idElemento : "");
-        
-
-        public static string InsertPersona(Persona persona) =>
-@"INSERT INTO PERSONAS(
-    ID_ELEMENTO, 
-    NOMBRE 
-) VALUES (
-    " + persona.IdElemento + @", 
-    '" + persona.Nombre + @"'
-);";
-        
-
-        public static string UpdatePersona(Persona persona) =>
-@"UPDATE PERSONAS SET 
-    NOMBRE= '" + persona.Nombre + @"'
-WHERE ID_PERSONA = " + persona.IdPersona+ ";";
-        
-
-        public static void RecuperarPersona(SQLiteDataReader reader, Persona persona) {
-
-            int idElemento = reader.GetInt32(0);
-            string descripcion = reader.GetString(1);
-
-            string fechaCreacionString = reader.GetString(2);
-            DateTime fechaCreacion = DateTime.Parse(fechaCreacionString);
-
-            persona.IdElemento = idElemento;
-            persona.Descripcion = descripcion;
-            persona.FechaCreacion = fechaCreacion;
-            persona.IdPersona= reader.GetInt32(3);
-            persona.Nombre = reader.GetString(4);
-        }
-
-        public static string DeletePersona(int idPersona) =>
-            @"DELETE FROM PERSONAS WHERE ID_PERSONA = " + idPersona + ";";
-
-        #endregion
 
         #region Eventos
 
@@ -393,6 +403,14 @@ CREATE TABLE PERSONAS(
     ID_ELEMENTO INTEGER,
     NOMBRE TEXT,
     FOREIGN KEY (ID_ELEMENTO) REFERENCES ELEMENTOS(ID_ELEMENTO)
+);
+
+CREATE TABLE RECUERDO_PERSONA(
+    ID_RECUERDO INTEGER,
+    ID_PERSONA INTEGER,
+    PRIMARY KEY(ID_RECUERDO, ID_PERSONA),
+    FOREIGN KEY (ID_RECUERDO) REFERENCES RECUERDOS(ID_RECUERDO),
+    FOREIGN KEY (ID_PERSONA) REFERENCES PERSONAS(ID_PERSONA)
 );
 
 CREATE TABLE EVENTO_PERSONA(

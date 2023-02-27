@@ -1,6 +1,6 @@
 ﻿namespace Recuerdos.Vista.Gestores
 {
-    partial class GestorEventoPersona
+    partial class AñadidorPersonas
     {
         /// <summary>
         /// Required designer variable.
@@ -33,7 +33,7 @@
             this.btnGuardar = new System.Windows.Forms.Button();
             this.btnCancelar = new System.Windows.Forms.Button();
             this.lblTodasPersonas = new System.Windows.Forms.Label();
-            this.lblIncluidas = new System.Windows.Forms.Label();
+            this.lblAñadidas = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lbIncluidos
@@ -57,6 +57,7 @@
             this.lbTodos.Size = new System.Drawing.Size(198, 379);
             this.lbTodos.TabIndex = 1;
             this.lbTodos.SelectedValueChanged += new System.EventHandler(this.lbTodos_SelectedValueChanged);
+            this.lbTodos.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.lbTodos_MouseDoubleClick);
             // 
             // btnAnadir
             // 
@@ -64,7 +65,7 @@
             this.btnAnadir.Name = "btnAnadir";
             this.btnAnadir.Size = new System.Drawing.Size(75, 23);
             this.btnAnadir.TabIndex = 2;
-            this.btnAnadir.Text = "<--";
+            this.btnAnadir.Text = "-->";
             this.btnAnadir.UseVisualStyleBackColor = true;
             this.btnAnadir.Click += new System.EventHandler(this.btnAnadir_Click);
             // 
@@ -76,7 +77,7 @@
             this.btnQuitar.Name = "btnQuitar";
             this.btnQuitar.Size = new System.Drawing.Size(75, 23);
             this.btnQuitar.TabIndex = 3;
-            this.btnQuitar.Text = "-->";
+            this.btnQuitar.Text = "<--";
             this.btnQuitar.UseVisualStyleBackColor = true;
             this.btnQuitar.Click += new System.EventHandler(this.btnQuitar_Click);
             // 
@@ -115,26 +116,26 @@
             this.lblTodasPersonas.AutoSize = true;
             this.lblTodasPersonas.Location = new System.Drawing.Point(12, 9);
             this.lblTodasPersonas.Name = "lblTodasPersonas";
-            this.lblTodasPersonas.Size = new System.Drawing.Size(60, 15);
+            this.lblTodasPersonas.Size = new System.Drawing.Size(107, 15);
             this.lblTodasPersonas.TabIndex = 7;
-            this.lblTodasPersonas.Text = "Personas: ";
+            this.lblTodasPersonas.Text = "Todas las personas:";
             // 
-            // lblIncluidas
+            // lblAñadidas
             // 
-            this.lblIncluidas.AutoSize = true;
-            this.lblIncluidas.Location = new System.Drawing.Point(297, 9);
-            this.lblIncluidas.Name = "lblIncluidas";
-            this.lblIncluidas.Size = new System.Drawing.Size(74, 15);
-            this.lblIncluidas.TabIndex = 8;
-            this.lblIncluidas.Text = "En el evento:";
+            this.lblAñadidas.AutoSize = true;
+            this.lblAñadidas.Location = new System.Drawing.Point(297, 9);
+            this.lblAñadidas.Name = "lblAñadidas";
+            this.lblAñadidas.Size = new System.Drawing.Size(59, 15);
+            this.lblAñadidas.TabIndex = 8;
+            this.lblAñadidas.Text = "Añadidas:";
             // 
-            // GestorEventoPersona
+            // AñadidorPersonas
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancelar;
             this.ClientSize = new System.Drawing.Size(506, 450);
-            this.Controls.Add(this.lblIncluidas);
+            this.Controls.Add(this.lblAñadidas);
             this.Controls.Add(this.lblTodasPersonas);
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.btnGuardar);
@@ -145,8 +146,8 @@
             this.Controls.Add(this.lbIncluidos);
             this.MaximumSize = new System.Drawing.Size(522, 489);
             this.MinimumSize = new System.Drawing.Size(522, 489);
-            this.Name = "GestorEventoPersona";
-            this.Text = "Asignar personas a eventos";
+            this.Name = "AñadidorPersonas";
+            this.Text = "Asignar personas";
             this.Load += new System.EventHandler(this.GestorEventoPersona_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -163,6 +164,6 @@
         private Button btnGuardar;
         private Button btnCancelar;
         private Label lblTodasPersonas;
-        private Label lblIncluidas;
+        private Label lblAñadidas;
     }
 }

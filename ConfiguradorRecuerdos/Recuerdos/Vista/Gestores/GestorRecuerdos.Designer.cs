@@ -1,7 +1,7 @@
 ﻿
-namespace Recuerdos.Vista
+namespace Recuerdos.Vista.Gestores
 {
-    partial class Procesador
+    partial class GestorRecuerdos
     {
         /// <summary>
         /// Required designer variable.
@@ -27,13 +27,14 @@ namespace Recuerdos.Vista
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Procesador));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GestorRecuerdos));
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.lvFicheros = new System.Windows.Forms.ListView();
             this.cNombre = new System.Windows.Forms.ColumnHeader();
             this.cTipo = new System.Windows.Forms.ColumnHeader();
+            this.btnCerrar = new System.Windows.Forms.Button();
             this.visorRecuerdo1 = new Recuerdos.Vista.Controles_de_usuario.VisorRecuerdo();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -64,7 +65,7 @@ namespace Recuerdos.Vista
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.lvFicheros);
-            this.splitContainer1.Size = new System.Drawing.Size(664, 682);
+            this.splitContainer1.Size = new System.Drawing.Size(664, 681);
             this.splitContainer1.SplitterDistance = 220;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 4;
@@ -79,7 +80,7 @@ namespace Recuerdos.Vista
             this.treeView1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.treeView1.Name = "treeView1";
             this.treeView1.SelectedImageIndex = 0;
-            this.treeView1.Size = new System.Drawing.Size(220, 661);
+            this.treeView1.Size = new System.Drawing.Size(220, 681);
             this.treeView1.TabIndex = 0;
             this.treeView1.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeView1_NodeMouseClick);
             // 
@@ -93,7 +94,7 @@ namespace Recuerdos.Vista
             this.lvFicheros.Location = new System.Drawing.Point(0, 0);
             this.lvFicheros.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.lvFicheros.Name = "lvFicheros";
-            this.lvFicheros.Size = new System.Drawing.Size(439, 661);
+            this.lvFicheros.Size = new System.Drawing.Size(439, 681);
             this.lvFicheros.SmallImageList = this.imageList1;
             this.lvFicheros.TabIndex = 0;
             this.lvFicheros.UseCompatibleStateImageBehavior = false;
@@ -108,6 +109,17 @@ namespace Recuerdos.Vista
             // 
             this.cTipo.Text = "Tipo";
             // 
+            // btnCerrar
+            // 
+            this.btnCerrar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCerrar.Location = new System.Drawing.Point(1426, 699);
+            this.btnCerrar.Name = "btnCerrar";
+            this.btnCerrar.Size = new System.Drawing.Size(75, 23);
+            this.btnCerrar.TabIndex = 6;
+            this.btnCerrar.Text = "Cerrar";
+            this.btnCerrar.UseVisualStyleBackColor = true;
+            this.btnCerrar.Click += new System.EventHandler(this.btnCerrar_Click);
+            // 
             // visorRecuerdo1
             // 
             this.visorRecuerdo1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -116,20 +128,23 @@ namespace Recuerdos.Vista
             this.visorRecuerdo1.Location = new System.Drawing.Point(685, 12);
             this.visorRecuerdo1.MinimumSize = new System.Drawing.Size(778, 664);
             this.visorRecuerdo1.Name = "visorRecuerdo1";
-            this.visorRecuerdo1.Size = new System.Drawing.Size(816, 682);
-            this.visorRecuerdo1.TabIndex = 5;
+            this.visorRecuerdo1.Size = new System.Drawing.Size(816, 681);
+            this.visorRecuerdo1.TabIndex = 7;
             // 
-            // Procesador
+            // GestorRecuerdos
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1513, 708);
+            this.CancelButton = this.btnCerrar;
+            this.ClientSize = new System.Drawing.Size(1513, 728);
             this.Controls.Add(this.visorRecuerdo1);
+            this.Controls.Add(this.btnCerrar);
             this.Controls.Add(this.splitContainer1);
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.MinimumSize = new System.Drawing.Size(1164, 571);
-            this.Name = "Procesador";
+            this.Name = "GestorRecuerdos";
             this.Text = "Procesador";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GestorRecuerdos_FormClosed);
             this.Load += new System.EventHandler(this.Procesador_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -146,6 +161,7 @@ namespace Recuerdos.Vista
         private System.Windows.Forms.ListView lvFicheros;
         private System.Windows.Forms.ColumnHeader cNombre;
         private System.Windows.Forms.ColumnHeader cTipo;
+        private Button btnCerrar;
         private Controles_de_usuario.VisorRecuerdo visorRecuerdo1;
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Recuerdos.Modelo;
+using Recuerdos.Vista.Gestores;
+
 
 namespace Recuerdos.Vista.Controles_de_usuario
 {
@@ -13,6 +15,8 @@ namespace Recuerdos.Vista.Controles_de_usuario
         }
         private Image? mImagenMostrada = null;
 
+       
+
         private List<Recuerdo> _Recuerdos = new List<Recuerdo>();
         public List<Recuerdo> Recuerdos {
             get {
@@ -24,13 +28,14 @@ namespace Recuerdos.Vista.Controles_de_usuario
             
                 _Recuerdos.Clear();
                 Modificados = false;
-                if(value != null)
-                    value.ForEach(r => _Recuerdos.Add(r.Clonar()));
+                if (value != null)
+                    _Recuerdos = value;
+                    //value.ForEach(r => _Recuerdos.Add(r.Clonar()));
                 cargarRecuerdoUI();
             }
         }
 
-        private bool mActualizandoUI = false;
+        private bool _ActualizandoUI = false;
         private bool Modificados = false;
 
         public VisorRecuerdo() {
@@ -46,7 +51,26 @@ namespace Recuerdos.Vista.Controles_de_usuario
             if (MessageBox.Show("Hay cambios sin guardar. ¿Guardar los cambios?",
                     "Cambios sin guardar", MessageBoxButtons.YesNo) == DialogResult.Yes) {
                 btnGuardar.PerformClick();
+            } else {
+                _Biblioteca.RecuperarRecuerdos(_Recuerdos);
             }
+        }
+
+        private bool todosTienenMismasPersonas() {
+            if (_Recuerdos == null || _Recuerdos.Count == 0)
+                return false;
+            List<RecuerdoPersona> rps = _Recuerdos[0].Personas;
+
+            for (int i = 1; i < _Recuerdos.Count; i++) {
+                if (rps.Count != _Recuerdos[i].Personas.Count)
+                    return false;
+
+                foreach (RecuerdoPersona rp in rps)
+                    if (!_Recuerdos[i].Personas.Any(ep2 => ep2.IdPersona == rp.IdPersona))
+                        return false;
+            }
+
+            return true;
         }
 
         #region Funciones UI
@@ -57,15 +81,16 @@ namespace Recuerdos.Vista.Controles_de_usuario
                 MessageBox.Show("La biblioteca es nula.");
                 return;
             }
+            pnlVideo.Visible = false;
 
-            mActualizandoUI = true;
+            _ActualizandoUI = true;
 
             _Biblioteca.Eventos.ForEach(e => {
                 cbDetallesEvento.Items.Add(e);
             });
 
 
-            mActualizandoUI = false;
+            _ActualizandoUI = false;
 
         }
 
@@ -89,13 +114,21 @@ namespace Recuerdos.Vista.Controles_de_usuario
             else return ev1.IdEvento == ev2.IdEvento;
         }
 
+        public void liberarVisor() {
+            vlcVideo.Stop();
+        }
+
         private void cargarRecuerdoUI() {
             bool hayRecuerdos = _Recuerdos.Count > 0;
-            mActualizandoUI = true;
+            _ActualizandoUI = true;
+
+            vlcVideo.Stop();
+            btnVideoPlayPausa.Text = "Play";
 
             tbDetallesLugar.Enabled = cbDetallesEvento.Enabled =
                 tbDetallesFuente.Enabled = tbDetallesDescripcion.Enabled =
-                btnDetallesQuitarEvento.Enabled = btnDetallesNuevoEvento.Enabled = hayRecuerdos;
+                btnDetallesQuitarEvento.Enabled = btnDetallesNuevoEvento.Enabled = 
+                gbDetalles.Enabled = selectorFecha.Enabled = hayRecuerdos;
 
             if (hayRecuerdos) {
 
@@ -121,17 +154,20 @@ namespace Recuerdos.Vista.Controles_de_usuario
                 }
 
                 // Ponemos la fecha
-
-                if(MiFecha.FechasIguales(_Recuerdos.Select(r => r.Fecha))) {
-
-                }
+                selectorFecha.Fechas = _Recuerdos.Select(r => r.Fecha).ToList();
+                
+                // Cargamos las personas
+                if (todosTienenMismasPersonas()) {
+                    lblPersonas.Text = _Recuerdos[0].GetPersonasString();
+                }else
+                    lblPersonas.Text = "(Varios)"; //TODO ESTO NO FUNCIONA CUANDO SE AÑADE UNA PERSONA A VARIOS RECUERDOS. rEVISAR TAMBIÉN EN EVENTOS.
 
 
             } else {
                 tbDetallesLugar.Text = "";
                 cbDetallesEvento.Text = "";
                 cbDetallesEvento.SelectedItem = null;
-                selectorFecha.Fecha = null;
+                selectorFecha.Fechas = null;
             }
 
             if (mImagenMostrada != null) {
@@ -139,14 +175,25 @@ namespace Recuerdos.Vista.Controles_de_usuario
                 pbFotoElegida.Image = null;
             }
 
-            if (_Recuerdos.Count == 1 && _Recuerdos[0].Tipo ==Recuerdo.TipoRecuerdo.Foto) {
-                mImagenMostrada = Image.FromFile(_Recuerdos[0].Ruta);
-                pbFotoElegida.Image = mImagenMostrada;
+            if (_Recuerdos.Count == 0 || _Recuerdos.Count > 1) {
+                pbFotoElegida.Visible = false;
+                pnlVideo.Visible = false;
+            } else {
+                pbFotoElegida.Visible = _Recuerdos[0].Tipo == Recuerdo.TipoRecuerdo.Foto;
+                pnlVideo.Visible = _Recuerdos[0].Tipo == Recuerdo.TipoRecuerdo.Video;
+                
+                if (_Recuerdos[0].Tipo == Recuerdo.TipoRecuerdo.Foto) {
+                    mImagenMostrada = Image.FromFile(_Recuerdos[0].Ruta);
+                    pbFotoElegida.Image = mImagenMostrada;
+                }else if(_Recuerdos[0].Tipo == Recuerdo.TipoRecuerdo.Video) {
+                    vlcVideo.Play(new FileInfo(_Recuerdos[0].Ruta));
+                    btnVideoPlayPausa.Text = "Pause";
+                }
             }
 
             actualizarBotonesUI();
 
-            mActualizandoUI = false;
+            _ActualizandoUI = false;
         }
 
         private void actualizarBotonesUI() {
@@ -172,28 +219,32 @@ namespace Recuerdos.Vista.Controles_de_usuario
 
                 _Biblioteca.GuardarEvento(nuevo);
 
-                mActualizandoUI = true;
+                _ActualizandoUI = true;
                 cbDetallesEvento.Items.Add(nuevo);
                 cbDetallesEvento.SelectedItem = null;
-                mActualizandoUI = false;
+                _ActualizandoUI = false;
 
                 cbDetallesEvento.SelectedItem = nuevo;
+
+                Modificados = true;
+                actualizarBotonesUI();
             }
         }
 
         private void cbDetallesEvento_SelectedIndexChanged(object sender, EventArgs e) {
 
-            if (mActualizandoUI)
+            if (_ActualizandoUI)
                 return;
 
             Evento? evento = cbDetallesEvento.SelectedItem as Evento;
-            Modificados = true;
 
             _Recuerdos.ForEach(r =>     
                 r.Evento = evento
             );
 
+            Modificados = true;
             actualizarBotonesUI();
+            
         }
 
         private void btnGuardar_Click(object sender, EventArgs e) {
@@ -219,26 +270,26 @@ namespace Recuerdos.Vista.Controles_de_usuario
                 return;
             }
 
-            _Recuerdos.ForEach(r => {
-                _Biblioteca.RecuperarRecuerdo(r);
-            });
+            
+            _Biblioteca.RecuperarRecuerdos(_Recuerdos);
+            
 
             Modificados = false;
-
             actualizarBotonesUI();
         }
 
         private void btnQuitarEvento_Click(object sender, EventArgs e) {
             cbDetallesEvento.SelectedItem = null;
+
+            Modificados = true;
+            actualizarBotonesUI();
         }
 
         private void tbCualquiera_TextChanged(object sender, EventArgs e) {
 
 
-            if (mActualizandoUI)
+            if (_ActualizandoUI)
                 return;
-
-            Modificados = true;
 
             _Recuerdos.ForEach(r => {
 
@@ -250,12 +301,57 @@ namespace Recuerdos.Vista.Controles_de_usuario
                     r.Descripcion = tbDetallesDescripcion.Text;
             });
 
+            Modificados = true;
             actualizarBotonesUI();
-
         }
 
+        private void btnEditarPersonas_Click(object sender, EventArgs e) {
+            if (_Biblioteca == null || _Recuerdos == null || _Recuerdos.Count == 0)
+                return;
+
+            List<Persona> elegidas = todosTienenMismasPersonas() ? _Recuerdos[0].GetListaPersonas() : new List<Persona>();
+
+            AñadidorPersonas gestor = new (_Biblioteca.Personas, elegidas);
+
+            if (gestor.ShowDialog() == DialogResult.OK) {
+                _Recuerdos.ForEach(r => r.RevisarPersonas(gestor.Elegidas));
+
+                cargarRecuerdoUI();
+                Modificados = true;
+                actualizarBotonesUI();
+            }
+        }
 
         #endregion
 
+        private void selectorFecha_FechaModificada(object sender, EventArgs e) {
+            if (_ActualizandoUI)
+                return;
+            
+            Modificados = true;
+            actualizarBotonesUI();
+            
+        }
+
+        private void btnVideoPlayPausa_Click(object sender, EventArgs e) {
+
+            if (vlcVideo.IsPlaying) {
+                vlcVideo.Pause();
+                btnVideoPlayPausa.Text = "Play";
+            } else {
+                vlcVideo.Play();
+                btnVideoPlayPausa.Text = "Pause";
+            }
+
+        }
+
+        private void btnVideoStop_Click(object sender, EventArgs e) {
+            vlcVideo.Stop();
+            btnVideoPlayPausa.Text = "Play";
+        }
+
+        private void vlcVideo_VlcLibDirectoryNeeded(object sender, Vlc.DotNet.Forms.VlcLibDirectoryNeededEventArgs e) {
+            e.VlcLibDirectory = Directory.CreateDirectory("C:\\Program Files\\VideoLAN\\VLC\\");
+        }
     }
 }
